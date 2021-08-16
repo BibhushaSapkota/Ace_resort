@@ -44,11 +44,13 @@ class Register:
                       fg='#51375d').place(x=370, y=160)
         self.txt_email=Entry(frame1,font=("times new roman",15),bg='#bcb5c0')
         self.txt_email.place(x=370,y=190,width=250)
-        self.var_g=IntVar()
-        gender= Label(frame1, text='Gender', font=("times new roman", 15, 'bold'), bg='white',
-                      fg='#51375d').place(x=50, y=220)
-        g_radio_male=Radiobutton(frame1,text='Male',bg='#bcb5c0',padx=5,variable=self.var_g,value=1).place(x=50,y=250)
-        g_radio_female = Radiobutton(frame1, text='Female',bg='#bcb5c0', padx=5,variable=self.var_g, value=2).place(x=130, y=250)
+
+        gender=Label(frame1, text='Gender', font=("times new roman", 15, 'bold'), bg='white',
+              fg='#51375d').place(x=50, y=220)
+        self.gender = ttk.Combobox(frame1, font=("times new roman", 12), state='readonly', justify=CENTER)
+        self.gender['values'] = ('Select', 'Male', 'Female','non_binary')
+        self.gender.place(x=50, y=250, width=250)
+        self.gender.current(0)
 
         age= Label(frame1, text='Age', font=("times new roman", 15, 'bold'), bg='white',
                       fg='#51375d').place(x=370, y=220)
@@ -80,6 +82,7 @@ class Register:
         self.terms_chk=IntVar()
         terms=Checkbutton(frame1,text='I Agree To The Terms and Conditions',variable=self.terms_chk,onvalue=1,offvalue=0,bg='white').place(x=50, y=420)
 
+
         register_btn=Button(frame1,text="  Register  ",bg='#9a90e4',command=self.register_data).place(x=50,y=500,width=250)
         login_btn=Button(frame1,text="   Login  ",bg='#9a90e4',command=self.login_window).place(x=370,y=500,width=250)
     def clear_data(self):
@@ -90,13 +93,13 @@ class Register:
         self.txt_age.delete(0, END)
         self.txt_password.delete(0, END)
         self.txt_confirm_password.delete(0, END)
-        self.cmb_question.delete(0, END)
+        self.cmb_question.set("Select")
         self.txt_answer.delete(0, END)
-        self.var_g.set(0)
+        self.gender.set("Select")
 
 
     def register_data(self):
-        if self.txt_fname.get()=="" or self.txt_lname.get()=="" or self.txt_contact.get()==""or self.txt_email.get()==""or self.txt_age.get()==""or self.var_g.get()==""or self.cmb_question.get()=='Select'or self.txt_password.get()==""or self.txt_confirm_password.get()=="":
+        if self.txt_fname.get()=="" or self.txt_lname.get()=="" or self.txt_contact.get()==""or self.txt_email.get()==""or self.txt_age.get()==""or self.gender.get()==""or self.cmb_question.get()=='Select'or self.txt_password.get()==""or self.txt_confirm_password.get()=="":
             messagebox.showerror("Error","All fields are required",parent=self.root)
         elif self.txt_password.get()!= self.txt_confirm_password.get():
             messagebox.showerror("Error","password and confirm password doesn't match",parent=self.root)
@@ -113,32 +116,31 @@ class Register:
                     user='root',
                     password='@!2002bisesh',
                     port=3306,
-                    database='registration')
+                    database='login_registration')
                 cur=con.cursor()
-                cur.execute("select * from customer_details where email=%s",self.txt_email.get())
-                row=cur.fetchone()
-                if row is not None:
-                    messagebox.showerror("Error","User already exists,Please try again with another username.",parent=self.root)
-                else:
-                    cur.execute("insert into customer_details(fname,lname,contact_number,email,gender,age,password,security_question,answer)"
-                                "values(%s,%s,%d,%s,%d,%d,%s,%s,%s)",
-                                (self.txt_fname.get(),
-                                 self.txt_lname.get(),
-                                 self.txt_contact.get(),
-                                 self.txt_email.get(),
-                                 self.var_g.get(),
-                                 self.txt_age.get(),
-                                 self.txt_password.get(),
-                                 self.cmb_question.get(),
-                                 self.txt_answer.get()
-                                 )
-                                )
-                    con.commit()
-                    con.close()
-                    messagebox.showinfo("success","You have been successfully registered",parent=self.root)
-                    self.clear_data()
+                fname=self.txt_fname.get()
+                lname=self.txt_lname.get()
+                contact_number=self.txt_contact.get()
+                email=self.txt_email.get()
+                gender=self.gender.get()
+                age=self.txt_age.get()
+                password=self.txt_password.get()
+                security_question=self.cmb_question.get()
+                answer=self.txt_answer.get()
+
+
+                sql="insert into registration_details(fname,lname,contact_number,email,gender,age,password,security_question,answer) " \
+                    "values('"+fname+"','"+lname+"',"+contact_number+",'"+email+"','"+gender+"',"+age+",'"+password+"','"+security_question+"','"+answer+"')"
+
+                values=cur.execute(sql)
+
+                con.commit()
+                con.close()
+                messagebox.showinfo("success","You have been successfully registered",parent=self.root)
+                self.clear_data()
 
             except Exception as es:
+                print("error")
                 messagebox.showerror("Error",f"Error due to:{str(es)}",parent=self.root)
 
     def login_window(self):

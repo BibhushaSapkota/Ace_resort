@@ -79,9 +79,9 @@ class Login:
                     user='root',
                     password='@!2002bisesh',
                     port=3306,
-                    database='registration')
+                    database='login_registration')
                 cur = con.cursor()
-                cur.execute("select * from customer_details where email=%s and password=%s", (self.username_entry.get(),self.password_entry.get()))
+                cur.execute("select * from registration_details where email=%s and password=%s", (self.username_entry.get(),self.password_entry.get()))
                 row = cur.fetchone()
                 if row==None:
                     messagebox.showerror("Error","Invalid username and password",parent=self.root)
