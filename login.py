@@ -31,7 +31,7 @@ class Login:
         self.register_btn = Button(self.root, text="New user registration", bg="green", fg="white",
                                    font=("Rockwell nova", 18),
                                    cursor="hand2",
-                                   border='0', overrelief="sunken")
+                                   border='0', overrelief="sunken",command=self.register_window)
         self.tip.bind_widget(self.register_btn, balloonmsg="If you are a new user \n press here.")
         self.register_btn.place(x=720, y=160)
         self.my_canvas.create_text(850, 270, text="LOGIN HERE", font=("Algerian", 40, 'bold'), fill="gold")
@@ -52,7 +52,7 @@ class Login:
         self.forget_btn.place(x=770, y=480)
 
         self.tip.bind_widget(self.forget_btn,balloonmsg="If you have forgotten password \n then press here.")
-        self.login_btn=Button(self.root,text="",font=("Rockwell nova", 25),image=self.login_btn_img,command=self.radio,cursor="hand2",borderwidth=0)
+        self.login_btn=Button(self.root,text="",font=("Rockwell nova", 25),image=self.login_btn_img,command=self.login,cursor="hand2",borderwidth=0)
         self.login_btn.place(x=750,y=530)
         self.rounded_rect(self.my_canvas, 675, 350, 370, 42, 10)
         self.rounded_rect(self.my_canvas, 675, 415, 370, 42, 10)
@@ -65,9 +65,31 @@ class Login:
         self.password_entry.bind("<FocusOut>", self.on_leave1)
         self.password_entry.insert(0, "Enter Password Here")
         self.root.mainloop()
+
+    def register_window(self):
+        self.root.destroy()
+        import registration_form
     def login(self):
         if self.username_entry.get()=="" or self.password_entry.get()=="":
-            messa
+            messagebox.showerror("Error","All fields are required",parent=self.root)
+        else:
+            try:
+                con = mysql.connector.connect(
+                    host='127.0.0.1',
+                    user='root',
+                    password='@!2002bisesh',
+                    port=3306,
+                    database='registration')
+                cur = con.cursor()
+                cur.execute("select * from customer_details where email=%s and password=%s", (self.username_entry.get(),self.password_entry.get()))
+                row = cur.fetchone()
+                if row==None:
+                    messagebox.showerror("Error","Invalid username and password",parent=self.root)
+                else:
+                    messagebox.showinfo("Success","Successful login",parent=self.root)
+                con.close()
+            except Exception as es:
+                messagebox.showerror("Error",f"Error due to:{str(es)}",parent=self.root)
     def on_enter(self,c):
         if self.username_entry.get() == "Enter Username Here":
             self.username_entry.delete(0,'end')

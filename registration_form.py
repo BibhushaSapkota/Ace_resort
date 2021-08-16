@@ -81,6 +81,7 @@ class Register:
         terms=Checkbutton(frame1,text='I Agree To The Terms and Conditions',variable=self.terms_chk,onvalue=1,offvalue=0,bg='white').place(x=50, y=420)
 
         register_btn=Button(frame1,text="  Register  ",bg='#9a90e4',command=self.register_data).place(x=50,y=500,width=250)
+        login_btn=Button(frame1,text="   Login  ",bg='#9a90e4',command=self.login_window).place(x=370,y=500,width=250)
     def clear_data(self):
         self.txt_fname.delete(0,END)
         self.txt_lname.delete(0, END)
@@ -119,7 +120,7 @@ class Register:
                 if row is not None:
                     messagebox.showerror("Error","User already exists,Please try again with another username.",parent=self.root)
                 else:
-                    cur.execute("insert into customer_details('fname','lname','contact_number','email','gender','age','password','security_question','answer')"
+                    cur.execute("insert into customer_details(fname,lname,contact_number,email,gender,age,password,security_question,answer)"
                                 "values(%s,%s,%d,%s,%d,%d,%s,%s,%s)",
                                 (self.txt_fname.get(),
                                  self.txt_lname.get(),
@@ -139,6 +140,10 @@ class Register:
 
             except Exception as es:
                 messagebox.showerror("Error",f"Error due to:{str(es)}",parent=self.root)
+
+    def login_window(self):
+        self.root.destroy()
+        import login
 
 root=Tk()
 obj=Register(root)
