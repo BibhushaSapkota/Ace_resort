@@ -128,4 +128,19 @@ class Login:
         self.my_canvas.create_line(x + w, y + c, x + w, y + h - c, fill="black", width=10)
     def radio(self):
         print(self.var.get())
+def show_login_result(username, password):
+    con = mysql.connector.connect(
+        host='127.0.0.1',
+        user='root',
+        password='@!2002bisesh',
+        port=3306,
+        database='login_registration')
+    cur = con.cursor()
+    cur.execute("select * from registration_details where email=%s and password=%s",
+                    (username, password))
+    check=cur.fetchall()
+    if check:
+        return "Pass"
+    else:
+        return "Fail"
 C=Login()

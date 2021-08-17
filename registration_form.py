@@ -118,6 +118,7 @@ class Register:
                     port=3306,
                     database='login_registration')
                 cur=con.cursor()
+
                 fname=self.txt_fname.get()
                 lname=self.txt_lname.get()
                 contact_number=self.txt_contact.get()
@@ -146,6 +147,11 @@ class Register:
     def login_window(self):
         self.root.destroy()
         import login
+def show_registration_info(password,confirm_password):
+        if password!= confirm_password:
+            return "Fail"
+        else:
+            return "Pass"
 
 root=Tk()
 obj=Register(root)
