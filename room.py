@@ -472,7 +472,7 @@ class Roompage:
 
     def droom_infoframe(self):
 
-        self.main_frame.place_forget()
+        self.frame_main.place_forget()
         self.frame_droom123=LabelFrame(self.frame_deluxeroom,height=500,width=950,borderwidth=5)
         self.frame_droom123.place(x=50,y=100)
         self.frame_droom123.pack_propagate(False)
